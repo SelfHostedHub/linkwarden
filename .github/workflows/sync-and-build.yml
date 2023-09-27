@@ -1,0 +1,151 @@
+name: Sync Upstream Code and Releases and Build New Releases
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    env:
+      UPSTREAM_REPO: linkwarden/linkwarden
+      MY_REPO: SelfHostedHub/linkwarden
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DEFAULT_BRANCH: main 
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set Git User Info
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+      
+      - name: Backup workflow file
+        run: cp .github/workflows/sync-and-build.yml sync-and-build.yml.bak
+       
+      - name: Fetch tags
+        run: git fetch --tags
+
+      - name: Add Upstream Remote
+        run: git remote add upstream https://github.com/${{ env.UPSTREAM_REPO }}.git || echo "Upstream already added."
+
+      - name: Fetch upstream
+        run: git fetch upstream
+      - name: Merge upstream
+        run: git reset --hard upstream/${{ env.DEFAULT_BRANCH }}
+      
+      - name: Create workflows directory
+        run: mkdir -p .github/workflows
+  
+      - name: Restore workflow file
+        run: |
+          cp sync-and-build.yml.bak .github/workflows/sync-and-build.yml
+          git add .github/workflows/sync-and-build.yml
+          git commit -m "Restore workflow file"
+  
+      - name: Force push to origin
+        run: git push origin ${{ env.DEFAULT_BRANCH }} --force
+
+      - name: Check for new tag
+        id: check_tag
+        run: |
+          git fetch upstream --tags
+          LATEST_UPSTREAM_TAG=$(git describe --tags `git ls-remote --tags upstream | sort -t '/' -k 3 -V | awk '{print $2}' | tail -n1`)
+          LATEST_MY_TAG=$(git describe --tags `git ls-remote --tags origin | sort -t '/' -k 3 -V | awk '{print $2}' | tail -n1`)
+          if [ "$LATEST_UPSTREAM_TAG" != "$LATEST_MY_TAG" ]; then
+            echo "New tag detected: $LATEST_UPSTREAM_TAG"
+            echo "::set-output name=new_tag::true"
+            echo "::set-output name=tag::${LATEST_UPSTREAM_TAG}"
+          else
+            echo "No new tag found."
+            echo "::set-output name=new_tag::false"
+          fi
+      - name: Install GitHub CLI
+        run: |
+          sudo apt update
+          sudo apt install -y gh
+      - name: Create release if new tag
+        if: steps.check_tag.outputs.new_tag == 'true'
+        id: create_release
+        run: |
+          TAG=${{ steps.check_tag.outputs.tag }}
+          COMMIT=$(git rev-list -n 1 $TAG)
+          DESCRIPTION=$(git log -1 --pretty=%B)
+          echo "::set-output name=tag::$TAG"
+          echo "::set-output name=commit::$COMMIT"
+          echo "::set-output name=description::$DESCRIPTION"
+      - name: Push release to your repo using GitHub API
+        if: steps.create_release.outputs.tag != ''
+        id: push_release
+        run: |
+          TAG=${{ steps.create_release.outputs.tag }}
+          COMMIT=${{ steps.create_release.outputs.commit }}
+          DESCRIPTION="${{ steps.create_release.outputs.description }}"
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ env.MY_REPO }}/releases \
+            -d '{
+              "tag_name": "'"$TAG"'",
+              "target_commitish": "'"$COMMIT"'",
+              "name": "'"$TAG"'",
+              "body": "'"$DESCRIPTION"'",
+              "draft": false,
+              "prerelease": false
+            }'
+          echo "::set-output name=tag::$TAG"
+      
+      - name: Set tag as output
+        if: steps.push_release.outputs.tag != ''
+        id: set_tag
+        run: echo "::set-output name=tag::${{ steps.create_release.outputs.tag }}"
+    outputs:
+      tag: ${{ steps.set_tag.outputs.tag }} 
+
+  build:
+    needs: sync
+    runs-on: ubuntu-latest
+    if: needs.sync.outputs.tag != '' && needs.sync.outputs.tag != null
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Debug  
+        run: echo "Tag from sync job is ${{ needs.sync.outputs.tag }}"
+      - uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Extract Builder meta
+        id: builder-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/SelfHostedHub/linkwarden
+          tags: |
+            type=raw,value=${{ needs.sync.outputs.tag }}
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            latest
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true  
+          tags: ${{ steps.builder-meta.outputs.tags }}
+          labels: ${{ steps.builder-meta.outputs.labels }}
