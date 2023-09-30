@@ -15,14 +15,14 @@ jobs:
     env:
       UPSTREAM_REPO: linkwarden/linkwarden
       MY_REPO: SelfHostedHub/linkwarden
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       DEFAULT_BRANCH: main 
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       
       - name: Set Git User Info
         run: |
