@@ -55,7 +55,7 @@ jobs:
       - name: Force push to origin
         run: git push origin ${{ env.DEFAULT_BRANCH }} --force
         env:
-         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
       - name: Check for new tag
         id: check_tag
@@ -93,7 +93,7 @@ jobs:
           COMMIT=${{ steps.create_release.outputs.commit }}
           DESCRIPTION="${{ steps.create_release.outputs.description }}"
           curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: token ${{ secrets.GH_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/${{ env.MY_REPO }}/releases \
             -d '{
