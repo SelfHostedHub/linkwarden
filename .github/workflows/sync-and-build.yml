@@ -41,7 +41,7 @@ jobs:
       - name: Fetch upstream
         run: |
           git fetch upstream
-          git merge upstream/${{ env.DEFAULT_BRANCH }} --no-commit --no-ff
+          git merge upstream/${{ env.DEFAULT_BRANCH }} --allow-unrelated-histories --no-commit --no-ff
       
       - name: Create workflows directory
         run: mkdir -p .github/workflows
