@@ -38,10 +38,27 @@ jobs:
       - name: Add Upstream Remote
         run: git remote add upstream https://github.com/${{ env.UPSTREAM_REPO }}.git || echo "Upstream already added."
 
-      - name: Fetch upstream
+      - name: Fetch upstream changes and rebase
         run: |
           git fetch upstream
-          git merge upstream/${{ env.DEFAULT_BRANCH }} --allow-unrelated-histories --no-commit --no-ff
+          git rebase upstream/${{ env.DEFAULT_BRANCH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      
+      - name: Create workflows directory
+        run: mkdir -p .github/workflows
+      
+      - name: Restore workflow file
+        run: |
+          cp sync-and-build.yml.bak .github/workflows/sync-and-build.yml
+          git add .github/workflows/sync-and-build.yml
+          git commit -m "Restore workflow file"
+      
+      - name: Force push to origin
+        run: git push origin ${{ env.DEFAULT_BRANCH }} --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
       
       - name: Create workflows directory
         run: mkdir -p .github/workflows
