@@ -41,7 +41,7 @@ jobs:
       - name: Fetch upstream changes and rebase
         run: |
           git fetch upstream
-          git rebase upstream/${{ env.DEFAULT_BRANCH }}
+          git rebase -X theirs upstream/${{ env.DEFAULT_BRANCH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       
