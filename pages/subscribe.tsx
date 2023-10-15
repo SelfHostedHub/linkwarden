@@ -1,6 +1,5 @@
 import SubmitButton from "@/components/SubmitButton";
 import { signOut } from "next-auth/react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
@@ -11,7 +10,7 @@ import { Plan } from "@/types/global";
 export default function Subscribe() {
   const [submitLoader, setSubmitLoader] = useState(false);
 
-  const [plan, setPlan] = useState<Plan>(0);
+  const [plan, setPlan] = useState<Plan>(1);
 
   const { data, status } = useSession();
   const router = useRouter();
@@ -51,7 +50,7 @@ export default function Subscribe() {
         <div className="flex text-white dark:text-black gap-3 border border-solid border-sky-100 dark:border-neutral-700 w-4/5 mx-auto p-1 rounded-xl relative">
           <button
             onClick={() => setPlan(Plan.monthly)}
-            className={`w-full text-black dark:text-white duration-75 text-sm rounded-lg p-1 ${
+            className={`w-full text-black dark:text-white duration-100 text-sm rounded-lg p-1 ${
               plan === Plan.monthly
                 ? "text-white bg-sky-700 dark:bg-sky-700"
                 : "hover:opacity-80"
@@ -62,7 +61,7 @@ export default function Subscribe() {
 
           <button
             onClick={() => setPlan(Plan.yearly)}
-            className={`w-full text-black dark:text-white duration-75 text-sm rounded-lg p-1 ${
+            className={`w-full text-black dark:text-white duration-100 text-sm rounded-lg p-1 ${
               plan === Plan.yearly
                 ? "text-white bg-sky-700 dark:bg-sky-700"
                 : "hover:opacity-80"
@@ -70,8 +69,8 @@ export default function Subscribe() {
           >
             <p>Yearly</p>
           </button>
-          <div className="absolute -top-4 -right-4 px-1 bg-red-500 text-white rounded-md rotate-[22deg]">
-            %25 Off
+          <div className="absolute -top-3 -right-4 px-1 bg-red-500 text-sm text-white rounded-md rotate-[22deg]">
+            25% Off
           </div>
         </div>
 
@@ -90,7 +89,7 @@ export default function Subscribe() {
             <div className="w-full p-1 rounded-md border border-solid border-sky-100 dark:border-neutral-700">
               <p className="text-sm">
                 {process.env.NEXT_PUBLIC_TRIAL_PERIOD_DAYS}-day free trial, then
-                ${plan === Plan.monthly ? "4" : "3"} per month
+                ${plan === Plan.monthly ? "4 per month" : "36 annually"}
               </p>
               <p className="text-sm">+ VAT if applicable</p>
             </div>

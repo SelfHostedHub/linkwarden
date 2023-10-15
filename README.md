@@ -3,7 +3,7 @@
   <h1>Linkwarden</h1>
 
 <a href="https://discord.com/invite/CtuYV47nuJ"><img src="https://img.shields.io/discord/1117993124669702164?logo=discord&style=flat-square" alt="Discord"></a>
-<img alt="GitHub commits since latest release (by SemVer including pre-releases)" src="https://img.shields.io/github/commits-since/linkwarden/linkwarden/v1.0.1/dev">
+<img alt="GitHub commits since latest release (by SemVer including pre-releases)" src="https://img.shields.io/github/commits-since/linkwarden/linkwarden/v1.1.0/dev">
 <img src="https://img.shields.io/github/languages/top/linkwarden/linkwarden?style=flat-square" alt="Top Language">
 <img src="https://img.shields.io/github/stars/linkwarden/linkwarden?style=flat-square" alt="Github Stars">
 
@@ -11,7 +11,7 @@
 
 <div align='center'>
 
-[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app/getting-started) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/orgs/linkwarden/projects/1) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
+[Website](https://linkwarden.app) | [Getting Started](https://docs.linkwarden.app) | [Features](https://github.com/linkwarden/linkwarden#features) | [Roadmap](https://github.com/orgs/linkwarden/projects/1) | [Screenshots](https://github.com/linkwarden/linkwarden#screenshots) | [Support ❤](https://github.com/linkwarden/linkwarden#support-)
 
 </div>
 
@@ -24,7 +24,7 @@ Additionally, Linkwarden is designed with collaboration in mind, sharing links w
 <img src="./assets/showcase_image.png" />
 
 > **Note**
-> Our official [Cloud](https://linkwarden.app/#pricing) offering provides the simplest way to begin using Linkwarden. It's the preferred choice for many due to its time-saving benefits. Your subscription supports our hosting infrastructure and ongoing development. <br> Alternatively, if you prefer [self-hosting](https://docs.linkwarden.app/getting-started/self-hosting) Linkwarden, no problem! You'll still have access to all the premium features.
+> Our official [Cloud](https://linkwarden.app/#pricing) offering provides the simplest way to begin using Linkwarden and it's the preferred choice for many due to its time-saving benefits. <br> Your subscription supports our hosting infrastructure and ongoing development. <br> Alternatively, if you prefer [self-hosting](https://docs.linkwarden.app/self-hosting/installation) Linkwarden, no problem! You'll still have access to all the premium features.
 
 <details>
 <summary><b>A bit of a "history"</b></summary>
@@ -47,6 +47,11 @@ We highly recommend that you don't use the old version because it is no longer m
 - 📱 Responsive design and supports most browsers.
 - 🌓 Dark/Light mode support.
 - 🧩 Browser extension, managed by the community [check it out!](https://github.com/linkwarden/browser-extension)
+- ⬇️ Import your bookmarks from other browsers.
+
+## Suggestions
+
+We usually go after the [popular suggestions](https://github.com/linkwarden/linkwarden/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc). Feel free to open a [new issue](https://github.com/linkwarden/linkwarden/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.md&title=) to suggest one - others might be interested too! :)
 
 ## Roadmap
 
@@ -75,20 +80,20 @@ If you found a security vulnerability, please do **not** create a public issue, 
 ## Screenshots
 
 <div align="center">
-<img src="./assets/collections.png" height="188" />
+<img src="./assets/collections.png" height="150" />
 
-<img src="./assets/collaborators.png" height="188" />
+<img src="./assets/collaborators.png" height="150" />
 
-<img src="./assets/link_details.png" height="188" />
+<img src="./assets/link_details.png" height="150" />
 </div>
 
 ## Support ❤
 
-Other than using our official [Cloud](https://linkwarden.app/#pricing) offering, any [donations](https://opencollective.com/linkwarden) are highly appreciated as well. <3
+Other than using our official [Cloud](https://linkwarden.app/#pricing) offering, any [donations](https://opencollective.com/linkwarden) are highly appreciated as well!
 
 Here are the other ways to support/cheer this project:
 
-- Starring this repo.
+- Starring this repository.
 - Joining us on [Discord](https://discord.com/invite/CtuYV47nuJ).
 - Following @daniel31x13 on [Mastodon](https://mastodon.social/@daniel31x13), [Twitter](https://twitter.com/daniel31x13) and [GitHub](https://github.com/daniel31x13).
 - Referring Linkwarden to a friend.
