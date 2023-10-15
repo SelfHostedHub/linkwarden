@@ -42,22 +42,27 @@ jobs:
         run: |
           git fetch upstream
           git rebase -X theirs upstream/${{ env.DEFAULT_BRANCH }}
+          git pull origin ${{ env.DEFAULT_BRANCH }} --rebase
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      
-      - name: Create workflows directory
+          
+        - name: Create workflows directory
         run: mkdir -p .github/workflows
-      
-      - name: Restore workflow file
+        
+        - name: Restore workflow file
         run: |
           cp sync-and-build.yml.bak .github/workflows/sync-and-build.yml
           git add .github/workflows/sync-and-build.yml
           git commit -m "Restore workflow file"
-      
-      - name: Force push to origin
+        shell: /usr/bin/bash -e {0}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          
+        - name: Force push to origin
         run: git push origin ${{ env.DEFAULT_BRANCH }} --force
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
 
       
       - name: Create workflows directory
